@@ -106,7 +106,10 @@ const CreateUserForm = () => {
                                 <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-slate-100">Cover Photo</label>
                                 <div className="mt-2 flex justify-center bg-zinc-700 rounded-lg border border-dashed border-slate-100/25 px-6 py-10">
                                     {formikProps.values.image.length > 0 ? (
-                                        <img src={formikProps.values.image} alt="User Image" />
+                                        <div>
+                                            <img src={formikProps.values.image} alt="User Image" />
+                                            <button onClick={() => formikProps.setFieldValue("image", "")} className="mt bg-emerald-500">Clear</button>
+                                        </div>
                                     ) : (
                                         <div className="text-center">
                                             <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">

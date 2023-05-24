@@ -145,19 +145,26 @@ const CreateForm = () => {
                                 <div className="col-span-full">
                                     <label htmlFor="cover-photo" className="block text-sm font-medium leading-6 text-slate-100">Cover Photo</label>
                                     <div className="mt-2 flex justify-center bg-zinc-700 rounded-lg border border-dashed border-slate-100/25 px-6 py-10">
-                                        <div className="text-center">
-                                            <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                                <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clip-rule="evenodd" />
-                                            </svg>
-                                            <div className="-z-20 mt-4 flex text-sm leading-6 text-gray-600">
-                                                <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
-                                                    <p className="text-slate-200">Upload a file</p>
-                                                    <Field id="file-upload" name="file-upload" type="file" accept="image/png, image/jpeg" onChange={(e: ChangeEvent<HTMLInputElement>) => uploadFile(e.target.files).then((url) => formikProps.setFieldValue("image", url))} className="sr-only" />
-                                                </label>
-                                                <p className="pl-1 text-slate-200">or drag and drop</p>
+                                        {formikProps.values.image.length > 0 ? (
+                                            <div>
+                                                <img src={formikProps.values.image} alt="Event Image" />
+                                                <button onClick={() => formikProps.setFieldValue("image", "")} className="mt bg-emerald-500">Clear</button>
                                             </div>
-                                            <p className="text-xs leading-5 text-slate-200">PNG, JPG, GIF up to 10MB</p>
-                                        </div>
+                                        ) : (
+                                            <div className="text-center">
+                                                <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                                    <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" clipRule="evenodd" />
+                                                </svg>
+                                                <div className="-z-20 mt-4 flex text-sm leading-6 text-gray-600">
+                                                    <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-indigo-600 focus-within:outline-none focus-within:ring-2 focus-within:ring-indigo-600 focus-within:ring-offset-2 hover:text-indigo-500">
+                                                        <p className="text-slate-200">Upload a file</p>
+                                                        <Field id="file-upload" name="file-upload" type="file" accept="image/png, image/jpeg" onChange={(e: ChangeEvent<HTMLInputElement>) => uploadFile(e.target.files).then((url) => formikProps.setFieldValue("image", url))} className="sr-only" />
+                                                    </label>
+                                                    <p className="pl-1 text-slate-200">or drag and drop</p>
+                                                </div>
+                                                <p className="text-xs leading-5 text-slate-200">PNG, JPG, GIF up to 10MB</p>
+                                            </div>
+                                        )}
                                     </div>
                                     <ErrorMessage name="image" render={renderError} />
                                 </div>
