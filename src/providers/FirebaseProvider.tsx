@@ -55,8 +55,6 @@ export const FirebaseProvider = ({ children }: any) => {
 
         const read = snapshot.docs;
 
-        console.log(read)
-
         if (read.length == 0) {
           // Send user to create an account
           console.log("No account found.");

@@ -20,7 +20,7 @@ export function Header() {
             {open ? (
                 <SignIn open={open} setOpen={setOpen} />
             ) : null}
-            <nav className="sticky z-50 top-5 w-9/12 rounded-2xl mr-auto ml-auto z-auto bg-zinc-800 backdrop-filter backdrop-blur-lg bg-opacity-30">
+            <nav className="sticky z-100 top-5 w-9/12 rounded-2xl mr-auto ml-auto z-auto bg-zinc-800 backdrop-filter backdrop-blur-lg bg-opacity-30">
                 <div className="max-w-5xl mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         <div className="flex space-x-4 text-white">

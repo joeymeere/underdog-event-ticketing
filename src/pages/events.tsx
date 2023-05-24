@@ -14,7 +14,7 @@ export default function Events() {
     return (
         <>
             <Header />
-            <main>
+            <main className="z-0">
                 <section>
                     <EventsHead />
                 </section>
