@@ -1,6 +1,34 @@
 import React from 'react';
 
 const CreateForm = () => {
+
+    /*
+    <h2 className="text-base font-semibold leading-7 text-slate-100">NFT Settings</h2>
+                            <p className="mt-1 text-sm leading-6 text-slate-200">Configure the behavior of your tickets.</p>
+
+                            <div className="space-y-10">
+                                <fieldset>
+                                    <div className="mt-6 space-y-6">
+                                        <div className="flex items-center gap-x-3">
+                                            <input id="transferable" name="transferable" type="radio" checked={isTransferable} onChange={() => {
+                                                setIsTransferable(true)
+                                                formikProps.setFieldValue("isTransferable", true)
+                                            }}
+                                                className="h-4 w-4 border-gray-300 text-emerald-600 focus:ring-emerald-600" />
+                                            <label htmlFor="transferable" className="block text-sm font-medium leading-6 text-slate-100">Transferable</label>
+                                        </div>
+                                        <div className="flex items-center gap-x-3">
+                                            <input id="non-transferable" name="non-transferable" type="radio" checked={!isTransferable} onChange={() => {
+                                                setIsTransferable(false)
+                                                formikProps.setFieldValue("isTransferable", false)
+                                            }}
+                                                className="h-4 w-4 border-gray-300 text-emerald-600 checked:bg-emerald-600 focus:ring-emerald-600" />
+                                            <label htmlFor="non-transferable" className="block text-sm font-medium leading-6 text-slate-100">Non-Transferable</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            */
     return (
         <form>
             <div className="mr-auto ml-auto space-y-12 -z-10 w-9/12">

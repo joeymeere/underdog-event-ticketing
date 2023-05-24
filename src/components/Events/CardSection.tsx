@@ -4,7 +4,7 @@ import { EventProps } from "../../interfaces";
 
 const EventCardSection = ({ events }: any) => {
     return (
-        <div className="max-w-9/12 p-24 grid gap-4 lg:grid-cols-4 sm:grid-cols-2">
+        <div className="max-w-7/12 p-24 grid gap-4 lg:grid-cols-3 sm:grid-cols-2">
             {events.map((event: EventProps, i: number) => (
                 <EventCard
                     key={i}

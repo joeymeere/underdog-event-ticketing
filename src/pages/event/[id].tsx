@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import { db } from "@/providers/firebase";
-import { IconArticle, IconBuildingCircus, IconCalendar, IconCircleArrowDown, IconLocation, IconUsers } from "@tabler/icons-react";
+import { IconArmchair, IconArticle, IconBuildingCircus, IconCalendar, IconCircleArrowDown, IconLocation, IconUsers } from "@tabler/icons-react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import moment from "moment";
 import React, { useState } from "react";
@@ -49,18 +49,19 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
     return (
         <>
             {open ? (
-                <EventModal 
-                    open={open} 
-                    setOpen={setOpen} 
-                    isPaywalled={keyItems.isPaywalled} 
-                    eventName={keyItems.name} 
-                    city={keyItems.city} 
-                    image={keyItems.image} 
-                    time={keyItems.startTime} 
-                    isTransferable={keyItems.isTransferable} 
-                    toPublicKey={user.walletAddress} 
-                    ticketPrice={keyItems.ticketPrice} 
-                    collectionId={keyItems.collectionId} 
+                <EventModal
+                    id={id}
+                    open={open}
+                    setOpen={setOpen}
+                    isPaywalled={keyItems.isPaywalled}
+                    eventName={keyItems.name}
+                    city={keyItems.city}
+                    image={keyItems.image}
+                    time={keyItems.startTime}
+                    isTransferable={keyItems.isTransferable}
+                    toPublicKey={user.walletAddress}
+                    ticketPrice={keyItems.ticketPrice}
+                    collectionId={keyItems.collectionId}
                 />
             ) : null}
             <Header />
@@ -72,7 +73,9 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                     <div className="p-4">
                         <div className="flex content-center justify-between">
                             <h1 className="text-4xl font-extrabold text-slate-100">{keyItems.name}</h1>
-                            <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">${keyItems.ticketPrice}</p>
+                            {keyItems.isPaywalled == true ? (
+                                <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">${keyItems.ticketPrice}</p>
+                            ) : null}
                         </div>
                         <div className="my-4 flex">
                             <IconCalendar size={24} color="white" />
@@ -82,7 +85,11 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                             <IconLocation size={24} color="white" />
                             <p className="ml-2 text-md text-slate-200">{keyItems.location.city + "," + " " + keyItems.location.country}</p>
                         </div>
-                        {participantItems.length >= 5 ? (
+                        <div className="mt-4 flex">
+                            <IconArmchair size={24} color="white" />
+                            <p className="ml-2 text-md text-slate-200">{keyItems.totalTickets - keyItems.ticketsIssued} seats available</p>
+                        </div>
+                        {keyItems.ticketsIssued >= 5 ? (
                             <div className="mt-4 flex">
                                 <IconUsers size={24} color="white" />
                                 <p className="ml-2 text-md text-slate-200">{keyItems.ticketsIssued} people are attending this event</p>
@@ -100,7 +107,11 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                             <p className="text-zinc-400">Join this event by registering below.</p>
                         </div>
                         <div className="px-6 pb-4">
-                            <button onClick={() => setOpen(true)} className="rounded-md w-full bg-emerald-400 px-4.5 py-2.5 text-md font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Register</button>
+                            {keyItems.ticketsIssued >= keyItems.totalTickets ? (
+                                <button disabled className="rounded-md w-full bg-gray-400 px-4.5 py-2.5 text-md font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Sold Out</button>
+                            ) : (
+                                <button onClick={() => setOpen(true)} className="rounded-md w-full bg-emerald-400 px-4.5 py-2.5 text-md font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Register</button>
+                            )}
                         </div>
                     </div>
                     <div className="bg-zinc-800 lg:col-span-2 sm:col-span-6 xs:col-span-6 rounded-lg">

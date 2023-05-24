@@ -9,21 +9,58 @@ import mintPaywalledTicket from '@/lib/mintPaywalledTicket';
 import moment from "moment";
 import mintTicket from '@/lib/mintTicket';
 import { useTransaction } from '@/providers/TransactionProvider';
+import { toast } from 'react-hot-toast';
+import { getClaimLink } from '@/lib/getClaimLink';
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '@/providers/firebase';
 
 //TODO: Google-OAuth provider & Wallet implementation with Firebase Auth
 
-export default function EventModal({ open, setOpen, isPaywalled, eventName, city, time, image, isTransferable, toPublicKey, ticketPrice, collectionId }: any) {
+export default function EventModal({ id, open, setOpen, isPaywalled, eventName, city, time, image, isTransferable, toPublicKey, ticketPrice, collectionId }: any) {
     const { setVisible } = useWalletModal();
     const { connected, publicKey } = useWallet();
     const { userDoc } = useFirebase();
+    const fullName = userDoc?.data.firstName + " " + userDoc?.data.lastName;
     const { sendUSDC } = useTransaction();
-    const [email, setEmail] = useState<string>(userDoc?.data.email);
-    const [name, setName] = useState<string | undefined>(userDoc?.data.firstName + " " + userDoc?.data.lastName);
+    const [email, setEmail] = useState<string>();
+    const [name, setName] = useState<string>();
     const cancelButtonRef = useRef(null);
 
     async function handleRegister() {
         try {
-            await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId)
+            const mint = await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId);
+
+            if (isTransferable == true && userDoc) {
+                const claimLink = await getClaimLink(collectionId, mint?.nftId);
+
+                await addDoc(collection(db, `users/${userDoc.id}/toBeClaimed`), {
+                    projectId: collectionId,
+                    nftId: mint?.nftId,
+                    eventId: id,
+                    claimLink: claimLink,
+                    eventName: eventName,
+                    image: image
+                })
+            }
+
+            if (userDoc) {
+                await addDoc(collection(db, `users/${userDoc.id}/registered`), {
+                    projectId: collectionId,
+                    nftId: mint?.nftId,
+                    eventId: id,
+                    eventName: eventName,
+                    image: image
+                })
+            }
+
+            await addDoc(collection(db, `events/${id}/participants`), {
+                name: name,
+                email: email,
+                mintAddress: mint?.mintAddress,
+                nftId: mint?.nftId,
+            })
+
+            setOpen(false)
         } catch (err) {
             throw new Error(`${err}`)
         }
@@ -32,7 +69,14 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
     async function handleRegisterWithPaywall() {
         try {
             await sendUSDC(toPublicKey, publicKey, ticketPrice);
-            await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId)
+            const mint = await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId)
+
+            await addDoc(collection(db, `events/${id}/participants`), {
+                name: name,
+                email: email,
+                mintAddress: mint?.mintAddress,
+                nftId: mint?.nftId,
+            })
         } catch (err) {
             throw new Error(`${err}`)
         }
@@ -78,10 +122,9 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                         name="name"
                                                         type="text"
                                                         autoComplete="name"
-                                                        value={name}
                                                         onChange={(e) => setName(e.target.value)}
                                                         required
-                                                        className="block w-full rounded-md border-0 bg-zinc-700 py-1.5 text-slate-200 shadow-sm ring-1 ring-inset ring-zinc-600 placeholder:text-slate-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
+                                                        className="block w-full rounded-md border-0 bg-zinc-700 py-1.5 px-2 text-slate-200 shadow-sm ring-1 ring-inset ring-zinc-600 placeholder:text-slate-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 filled:bg-zinc-700 sm:text-sm sm:leading-6"
                                                     />
                                                 </div>
                                             </div>
@@ -98,7 +141,7 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                         value={email}
                                                         onChange={(e) => setEmail(e.target.value)}
                                                         required
-                                                        className="block w-full rounded-md border-0 bg-zinc-700 py-1.5 text-slate-200 shadow-sm ring-1 ring-inset ring-zinc-600 placeholder:text-slate-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"
+                                                        className="block w-full rounded-md border-0 bg-zinc-700 py-1.5 px-2 text-slate-200 shadow-sm ring-1 ring-inset ring-zinc-600 placeholder:text-slate-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 filled:bg-zinc-700 sm:text-sm sm:leading-6"
                                                     />
                                                 </div>
                                             </div>
@@ -117,7 +160,21 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                     {connected ? (
                                                         <div>
                                                             <a
-                                                                onClick={() => handleRegisterWithPaywall()}
+                                                                onClick={() =>
+                                                                    toast.promise(
+                                                                        handleRegisterWithPaywall(),
+                                                                        {
+                                                                            loading: "Submitting...",
+                                                                            success: () => {
+                                                                                if (isTransferable == false) {
+                                                                                    return "Success! Your ticket has been minted."
+                                                                                } else {
+                                                                                    return "Success! Check your dashboard to claim."
+                                                                                }
+                                                                            },
+                                                                            error: (err) => `${err}`
+                                                                        })
+                                                                }
                                                                 className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                                                             >
                                                                 Pay & Register
@@ -126,7 +183,9 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                     ) : (
                                                         <div>
                                                             <button
-                                                                onClick={() => setVisible(true)}
+                                                                onClick={() =>
+                                                                    setVisible(true)
+                                                                }
                                                                 className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                                                             >
                                                                 Connect Wallet
@@ -138,12 +197,26 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                 <>
                                                     {connected ? (
                                                         <div>
-                                                            <button
-                                                                onClick={() => handleRegister()}
+                                                            <a
+                                                                onClick={() =>
+                                                                    toast.promise(
+                                                                        handleRegister(),
+                                                                        {
+                                                                            loading: "Submitting...",
+                                                                            success: () => {
+                                                                                if (isTransferable == false) {
+                                                                                    return "Success! Your ticket has been minted."
+                                                                                } else {
+                                                                                    return "Success! Check your dashboard to claim."
+                                                                                }
+                                                                            },
+                                                                            error: (err) => `${err}`
+                                                                        })
+                                                                }
                                                                 className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                                                             >
                                                                 Register
-                                                            </button>
+                                                            </a>
                                                         </div>
                                                     ) : (
                                                         <div>

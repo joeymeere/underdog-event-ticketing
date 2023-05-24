@@ -1,31 +1,18 @@
-import { HandleEventCreaton } from '@/interfaces';
 import createEvent from '@/lib/createEvent';
 import toast from "react-hot-toast";
 import React, { ChangeEvent, useState } from 'react';
-import { getStorage } from "firebase/storage";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { uploadFile } from '@/lib/uploadFile';
 import { useFirebase } from '@/providers/FirebaseProvider';
 
 const CreateForm = () => {
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [image, setImage] = useState("");
-    const [country, setCountry] = useState("");
-    const [city, setCity] = useState("");
-    const [street, setStreet] = useState("");
-    const [state, setState] = useState("");
-    const [zip, setZip] = useState("");
     const [isRemote, setIsRemote] = useState(false);
     const [isTransferable, setIsTransferable] = useState(true);
     const [isPaywalled, setIsPaywalled] = useState(false);
     const [isCapped, setIsCapped] = useState(false);
-    const [ticketPrice, setTicketPrice] = useState(0);
-    const [totalTickets, setTotalTickets] = useState(0);
     const { userDoc } = useFirebase();
 
-    const storage = getStorage();
 
     const validationSchema = Yup.object({
         name: Yup.string().required("Please select a name"),
@@ -243,31 +230,6 @@ const CreateForm = () => {
                         </div>
 
                         <div className="border-b border-slate-100/10 pb-12">
-                            <h2 className="text-base font-semibold leading-7 text-slate-100">NFT Settings</h2>
-                            <p className="mt-1 text-sm leading-6 text-slate-200">Configure the behavior of your tickets.</p>
-
-                            <div className="space-y-10">
-                                <fieldset>
-                                    <div className="mt-6 space-y-6">
-                                        <div className="flex items-center gap-x-3">
-                                            <input id="transferable" name="transferable" type="radio" checked={isTransferable} onChange={() => {
-                                                setIsTransferable(true)
-                                                formikProps.setFieldValue("isTransferable", true)
-                                            }}
-                                                className="h-4 w-4 border-gray-300 text-emerald-600 focus:ring-emerald-600" />
-                                            <label htmlFor="transferable" className="block text-sm font-medium leading-6 text-slate-100">Transferable</label>
-                                        </div>
-                                        <div className="flex items-center gap-x-3">
-                                            <input id="non-transferable" name="non-transferable" type="radio" checked={!isTransferable} onChange={() => {
-                                                setIsTransferable(false)
-                                                formikProps.setFieldValue("isTransferable", false)
-                                            }}
-                                                className="h-4 w-4 border-gray-300 text-emerald-600 checked:bg-emerald-600 focus:ring-emerald-600" />
-                                            <label htmlFor="non-transferable" className="block text-sm font-medium leading-6 text-slate-100">Non-Transferable</label>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
                             <h2 className="mt-10 text-base font-semibold leading-7 text-slate-100">Ticket Pricing</h2>
                             <p className="mt-1 mb-6 text-sm leading-6 text-slate-200">Specifying ticket pricing configuration for your event.</p>
                             <div className="space-y-6">

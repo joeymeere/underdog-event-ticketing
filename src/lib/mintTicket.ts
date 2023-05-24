@@ -30,13 +30,21 @@ export default async function mintTicket(
       data: data,
     };
 
-    axios(config)
-      .then((response) => {
-        console.log("Ticket successfully minted.");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const res = await axios(config).catch((error) => {
+      console.log(error);
+    });
+
+    //@ts-ignore
+    let responseData = res.data;
+
+    console.log(responseData);
+
+    console.log("Ticket successfully minted.");
+
+    return {
+      mintAddress: responseData.mintAddress,
+      nftId: responseData.id,
+    };
   } else {
     let config = {
       method: "post",
@@ -48,12 +56,20 @@ export default async function mintTicket(
       data: data,
     };
 
-    axios(config)
-      .then((response) => {
-        console.log("Ticket successfully minted.");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const res = await axios(config).catch((error) => {
+      console.log(error);
+    });
+
+    //@ts-ignore
+    let responseData = res.data;
+
+    console.log(responseData);
+
+    console.log("Ticket successfully minted.");
+
+    return {
+      mintAddress: responseData.mintAddress,
+      nftId: responseData.id,
+    };
   }
 }

@@ -31,19 +31,19 @@ export const TransactionProvider = ({ children }: any) => {
 
 
         let USDC_pubkey = new web3.PublicKey(USDC_ADDRESS);
-        let fromTokenAccount = await splToken.getAssociatedTokenAddressSync(USDC_pubkey, fromWallet);
-        let toTokenAccount = await splToken.getAssociatedTokenAddressSync(USDC_pubkey, toWallet);
+        let fromTokenAccount = await splToken.getAssociatedTokenAddress(USDC_pubkey, fromWallet);
+        let toTokenAccount = await splToken.getAssociatedTokenAddress(USDC_pubkey, toWallet);
         let toTokenAccountInfo = await connection.getAccountInfo(toTokenAccount);
 
         let transaction = new web3.Transaction();
 
         if (!toTokenAccountInfo || toTokenAccountInfo.data) {
             await transaction.add(
-                splToken.createAssociatedTokenAccountInstruction(fromWallet, fromTokenAccount, fromWallet, USDC_pubkey)
+                splToken.createAssociatedTokenAccountInstruction(toWallet, toTokenAccount, toWallet, USDC_pubkey)
             );
         }
 
-        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount));
+        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount, [], splToken.TOKEN_PROGRAM_ID));
 
         transaction.recentBlockhash = (
             await connection.getLatestBlockhash()

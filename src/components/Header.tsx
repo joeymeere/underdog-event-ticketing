@@ -5,10 +5,12 @@ import { IconBolt } from "@tabler/icons-react";
 import SignIn from "./Auth/SignIn";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useFirebase } from "@/providers/FirebaseProvider";
+import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 
 export function Header() {
     const [open, setOpen] = useState(false);
     const { userDoc, setUserDoc } = useFirebase();
+    const { setVisible } = useWalletModal();
     const { connected, disconnect } = useWallet();
 
     const disconnectWallet = () => {
@@ -73,7 +75,7 @@ export function Header() {
                                 </>
                             ) : (
                                 <a
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => setVisible(true)}
                                     className="inline-flex items-center rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-3.5 py-2.5 text-md font-semibold text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                                 >
                                     Sign-In
