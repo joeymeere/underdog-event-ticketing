@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+  --tw-color-zinc-800: #27272a;
+  --tw-color-zinc-600: #52525b;
+  --tw-color-emerald-400: #34d399;
+}
+
+body {
+  color: var(--tw-color-zinc-600);
+  background-size: cover;
+  background: linear-gradient(to top right, var(--tw-color-zinc-800), var(--tw-color-zinc-600), var(--tw-color-emerald-400));
+}
