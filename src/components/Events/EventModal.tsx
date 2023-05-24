@@ -135,13 +135,27 @@ export default function EventModal({ open, setOpen, isPaywalled, eventName, city
                                                     )}
                                                 </>
                                             ) : (
-                                                <div>
-                                                    <button
-                                                        className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
-                                                    >
-                                                        Register
-                                                    </button>
-                                                </div>
+                                                <>
+                                                    {connected ? (
+                                                        <div>
+                                                            <button
+                                                                onClick={() => handleRegister()}
+                                                                className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                                                            >
+                                                                Register
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div>
+                                                            <button
+                                                                onClick={() => setVisible(true)}
+                                                                className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                                                            >
+                                                                Connect Wallet
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </>
                                             )}
                                         </form>
                                     </div>
