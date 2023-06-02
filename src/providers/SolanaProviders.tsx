@@ -27,7 +27,6 @@ export const SolanaProviders = ({ children }: any) => {
             new TorusWalletAdapter(),
             new LedgerWalletAdapter(),
             new BraveWalletAdapter(),
-            new BackpackWalletAdapter(),
             new PhantomWalletAdapter(),
         ],
         []

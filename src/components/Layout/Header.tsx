@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { IconBolt } from "@tabler/icons-react";
-import SignIn from "./Auth/SignIn";
+import SignIn from "../Auth/SignIn";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useFirebase } from "@/providers/FirebaseProvider";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
@@ -55,9 +55,9 @@ export function Header() {
                                     {userDoc != null ? (
                                         <a
                                             onClick={
-                                                () => {
-                                                    disconnectWallet()
-                                                    setUserDoc(null);
+                                                async () => {
+                                                    await disconnectWallet()
+                                                    await setUserDoc(null);
                                                 }
                                             }
                                             className="inline-flex items-center rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-3.5 py-2.5 text-md font-semibold text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"

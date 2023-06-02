@@ -16,24 +16,24 @@ const EventCard = ({ id, name, time, city, description, image, isRemote }: Event
     return (
         <a href={`/event/${id}`}>
             <div
-                className="-z-30 block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+                className="-z-30 block rounded-lg shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] bg-neutral-700">
                 <div
-                    className="overflow-hidden bg-cover bg-no-repeat pb-2/6 -z-20"
+                    className="overflow-hidden h-44 bg-cover bg-no-repeat -z-20"
                 >
                     <img
-                        className="object-cover rounded-t-lg h-5/10 -z-10"
+                        className="object-contain rounded-t-lg h-5/10 -z-10"
                         src={image}
                         alt="" />
 
                 </div>
                 <div className="p-6">
                     <h5
-                        className="text-2xl font-extrabold leading-tight text-neutral-800 dark:text-neutral-50">
+                        className="text-2xl font-extrabold leading-tight text-slate-100">
                         {name}
                     </h5>
                     <div className="my-4">
                         <p className="text-lg font-semibold text-slate-300">
-                            {description.slice(0, 50) + "..."}
+                            {description.slice(0, 75) + "..."}
                         </p>
                     </div>
                     <div className="w-full mb-4 grid grid-rows-2 gap-x-4 gap-y-4">

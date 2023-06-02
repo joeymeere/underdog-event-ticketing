@@ -19,7 +19,7 @@ export const useTransaction = () => {
 
 export const TransactionProvider = ({ children }: any) => {
     const anchorWallet = useAnchorWallet();
-    const { publicKey, connected } = useWallet();
+    const { publicKey, connected, sendTransaction } = useWallet();
 
     let connection = new web3.Connection(`https://rpc.helius.xyz/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`);
 
@@ -29,48 +29,34 @@ export const TransactionProvider = ({ children }: any) => {
         const toWallet = new web3.PublicKey(toPublicKey);
         const fromWallet = new web3.PublicKey(fromPublicKey);
 
-
         let USDC_pubkey = new web3.PublicKey(USDC_ADDRESS);
-        let fromTokenAccount = await splToken.getAssociatedTokenAddress(USDC_pubkey, fromWallet);
-        let toTokenAccount = await splToken.getAssociatedTokenAddress(USDC_pubkey, toWallet);
+
+        let fromTokenAccount = await splToken.getAssociatedTokenAddressSync(USDC_pubkey, fromWallet);
+        let toTokenAccount = await splToken.getAssociatedTokenAddressSync(USDC_pubkey, toWallet);
         let toTokenAccountInfo = await connection.getAccountInfo(toTokenAccount);
 
         let transaction = new web3.Transaction();
 
-        if (!toTokenAccountInfo || toTokenAccountInfo.data) {
+        if (!toTokenAccountInfo || !toTokenAccountInfo.data) {
+            console.log("Creating token account...")
             await transaction.add(
-                splToken.createAssociatedTokenAccountInstruction(toWallet, toTokenAccount, toWallet, USDC_pubkey)
+                splToken.createAssociatedTokenAccountInstruction(toWallet, toTokenAccount, toWallet, USDC_pubkey, splToken.TOKEN_PROGRAM_ID)
             );
         }
 
-        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount, [], splToken.TOKEN_PROGRAM_ID));
-
-        transaction.recentBlockhash = (
-            await connection.getLatestBlockhash()
-        ).blockhash;
-
-        transaction.feePayer = anchorWallet?.publicKey;
-
-        const tx = await anchorWallet?.signTransaction(transaction)
-            .catch((err) => {
-                console.log(err);
-                throw new Error("User rejected the request.");
-            });
-
-        const buffer = tx?.serialize().toString("base64");
+        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount * Math.pow(10, 6), [], splToken.TOKEN_PROGRAM_ID));
 
         console.log("Sending...");
 
-        //@ts-ignore
-        let txid = await connection.sendEncodedTransaction(buffer)
-            .catch((err) => {
+        let txid = await sendTransaction(transaction, connection)
+            .catch((err: any) => {
                 throw new Error(`Unexpected Error Occurred: ${err}`);
             });
 
         console.log(`Transaction submitted: https://xray.helius.xyz/${txid}/tx`);
 
         return {
-            txhash: String(txid),
+            txhash: txid,
         };
     }
 

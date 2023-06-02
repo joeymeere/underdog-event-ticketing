@@ -1,4 +1,4 @@
-import { Header } from "../components/Header";
+import React from "react";
 import Hero from "../components/Hero";
 import Advantages from "../components/Advantages";
 import UnderdogInfo from "../components/UnderdogInfo";
@@ -6,7 +6,6 @@ import UnderdogInfo from "../components/UnderdogInfo";
 export default function Home() {
   return (
     <>
-      <Header />
       <main>
         <section>
           <Hero />

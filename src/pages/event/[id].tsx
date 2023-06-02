@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/Layout/Header";
 import { db } from "@/providers/firebase";
 import { IconArmchair, IconArticle, IconBuildingCircus, IconCalendar, IconCircleArrowDown, IconLocation, IconUsers } from "@tabler/icons-react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
@@ -59,23 +59,25 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                     image={keyItems.image}
                     time={keyItems.startTime}
                     isTransferable={keyItems.isTransferable}
-                    toPublicKey={user.walletAddress}
+                    toPublicKey={keyItems.publicKey}
                     ticketPrice={keyItems.ticketPrice}
                     collectionId={keyItems.collectionId}
                 />
             ) : null}
-            <Header />
-            <div className="mb-8 -z-10">
+            <div className="mb-24 -z-10">
                 <div className="ml-auto mr-auto mt-16 p-2 rounded-lg w-8/12 h-2/6 bg-zinc-800 shadow-lg">
                     <div className="w-full h-4/6">
                         <img src={keyItems.image} alt="Event Cover Image" className="w-full rounded-lg" />
                     </div>
                     <div className="p-4">
                         <div className="flex content-center justify-between">
-                            <h1 className="text-4xl font-extrabold text-slate-100">{keyItems.name}</h1>
+                            <h1 className="text-4xl font-extrabold text-slate-100 max-[420px]:text-xl">{keyItems.name}</h1>
                             {keyItems.isPaywalled == true ? (
                                 <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">${keyItems.ticketPrice}</p>
                             ) : null}
+                        </div>
+                        <div className="my-4">
+                            <p className="text-md font-regular text-slate-300">{keyItems.description}</p>
                         </div>
                         <div className="my-4 flex">
                             <IconCalendar size={24} color="white" />
@@ -98,7 +100,7 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                     </div>
                 </div>
                 <div className="ml-auto mr-auto mt-4 w-8/12 grid grid-cols-6 gap-x-6 sm:gap-y-4">
-                    <div className="bg-zinc-800 lg:col-span-4 sm:col-span-6 xs:col-span-6 rounded-lg">
+                    <div className="bg-zinc-800 lg:col-span-4 sm:col-span-6 max-[600px]:col-span-6 rounded-lg">
                         <div className="w-full flex content-center border border-b-slate-500 border-t-transparent border-r-transparent border-l-transparent p-6">
                             <IconCircleArrowDown size={28} color="white" />
                             <h2 className="ml-2 text-2xl font-extrabold text-slate-100">Register</h2>
@@ -114,7 +116,7 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                             )}
                         </div>
                     </div>
-                    <div className="bg-zinc-800 lg:col-span-2 sm:col-span-6 xs:col-span-6 rounded-lg">
+                    <div className="bg-zinc-800 lg:col-span-2 sm:col-span-6 max-[600px]:col-span-6 rounded-lg">
                         <div className="w-full flex content-center border border-b-slate-500 border-t-transparent border-r-transparent border-l-transparent p-6">
                             <IconBuildingCircus size={28} color="white" />
                             <h2 className="ml-2 text-2xl font-extrabold text-slate-100">Hosts</h2>

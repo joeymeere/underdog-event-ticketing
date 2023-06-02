@@ -20,14 +20,17 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
     const { setVisible } = useWalletModal();
     const { connected, publicKey } = useWallet();
     const { userDoc } = useFirebase();
-    const fullName = userDoc?.data.firstName + " " + userDoc?.data.lastName;
     const { sendUSDC } = useTransaction();
-    const [email, setEmail] = useState<string>();
-    const [name, setName] = useState<string>();
+    const [email, setEmail] = useState<string>("");
+    const [name, setName] = useState<string>("");
     const cancelButtonRef = useRef(null);
 
     async function handleRegister() {
         try {
+            //@ts-ignore
+            if (email?.length || name?.length < 1) {
+                throw new Error("Please add a name & email")
+            }
             const mint = await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId);
 
             if (isTransferable == true && userDoc) {
@@ -68,6 +71,12 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
 
     async function handleRegisterWithPaywall() {
         try {
+            if (email.length < 1) {
+                throw new Error("Please add an email")
+            } else if (name.length < 1) {
+                throw new Error("Please add a name")
+            }
+
             await sendUSDC(toPublicKey, publicKey, ticketPrice);
             const mint = await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId)
 
@@ -122,6 +131,7 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
                                                         name="name"
                                                         type="text"
                                                         autoComplete="name"
+                                                        value={name}
                                                         onChange={(e) => setName(e.target.value)}
                                                         required
                                                         className="block w-full rounded-md border-0 bg-zinc-700 py-1.5 px-2 text-slate-200 shadow-sm ring-1 ring-inset ring-zinc-600 placeholder:text-slate-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 filled:bg-zinc-700 sm:text-sm sm:leading-6"
@@ -160,7 +170,7 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
                                                     {connected ? (
                                                         <div>
                                                             <a
-                                                                onClick={() =>
+                                                                onClick={() => {
                                                                     toast.promise(
                                                                         handleRegisterWithPaywall(),
                                                                         {
@@ -173,7 +183,9 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
                                                                                 }
                                                                             },
                                                                             error: (err) => `${err}`
+
                                                                         })
+                                                                }
                                                                 }
                                                                 className="flex w-full justify-center rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                                                             >

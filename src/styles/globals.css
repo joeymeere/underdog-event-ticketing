@@ -14,5 +14,6 @@
 body {
   color: var(--tw-color-zinc-600);
   background-size: cover;
+  overscroll-behavior: contain;
   background: linear-gradient(to top right, var(--tw-color-zinc-900), var(--tw-color-zinc-800), var(--tw-color-emerald-400));
 }
