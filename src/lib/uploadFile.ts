@@ -11,26 +11,7 @@ export async function uploadFile(file: FileList | null) {
   });
   let json = await resp.json();
 
-  console.log(json);
-
   let imageURL = json.url;
 
-  console.log(imageURL);
-
   return imageURL;
-  /*
-  if (name) {
-    const storageRef = ref(storage, `images/${name}.png`);
-
-    await uploadBytes(storageRef, file).then((snapshot) => {
-      console.log(snapshot);
-    });
-  } else {
-    const storageRef = ref(storage, "images/file.png");
-
-    await uploadBytes(storageRef, file).then((snapshot) => {
-      console.log(snapshot);
-    });
-  }
-  */
 }

@@ -39,7 +39,9 @@ export default async function createEvent(eventData: HandleEventCreaton) {
     ticketsIssued: 0,
     totalTickets: eventData.totalTickets,
     collectionId: responseData.projectId,
-    startTime: eventData.startTime
+    startTime: eventData.startTime,
+    creatorId: eventData.creatorId,
+    publicKey: eventData.publicKey
   })
   console.log("Event successfully created.");
 }

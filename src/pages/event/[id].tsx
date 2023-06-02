@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import EventModal from "../../components/Events/EventModal";
 import styles from "../../styles/Transitions.module.css";
 import { useWallet } from "@solana/wallet-adapter-react";
+import SEO from "@/components/SEO";
 
 export const getServerSideProps = async ({ query }: any) => {
     let id = query.id;
@@ -48,6 +49,11 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
 
     return (
         <>
+            <SEO
+                title={`${keyItems.name} | Underdog Ticketing`}
+                description={keyItems.description}
+                image={keyItems.image}
+            />
             {open ? (
                 <EventModal
                     id={id}

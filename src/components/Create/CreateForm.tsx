@@ -5,16 +5,19 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { uploadFile } from '@/lib/uploadFile';
 import { useFirebase } from '@/providers/FirebaseProvider';
-import moment from 'moment';
 import UserGateModal from './UserGateModal';
+import { useRouter } from 'next/router';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 const CreateForm = () => {
+    const router = useRouter();
     const [isRemote, setIsRemote] = useState(false);
     const [isTransferable, setIsTransferable] = useState(true);
     const [isPaywalled, setIsPaywalled] = useState(false);
     const [isCapped, setIsCapped] = useState(false);
     const [open, setOpen] = useState(false);
     const { userDoc } = useFirebase();
+    const { publicKey } = useWallet();
 
     useEffect(() => {
         const checkForUser = () => {
@@ -30,6 +33,7 @@ const CreateForm = () => {
         description: Yup.string().required(),
         image: Yup.string().url().required(),
         isRemote: Yup.boolean(),
+        startDate: Yup.string().required("Please add a start date."),
         startTime: Yup.string().required("Please add a start time."),
         country: Yup.string().when('isRemote', {
             is: false,
@@ -84,7 +88,8 @@ const CreateForm = () => {
 
     const handleSubmit = async (values: any) => {
         try {
-            const unixTimestamp = moment(`${values.startDate} ${values.startTime}`, 'MM/DD/YYYY HH:mm').unix();
+            let unixTimestamp = Date.parse(`${values.startDate} ${values.startTime}`) / 1000;
+
             const formData: any = {
                 name: values.name,
                 description: values.description,
@@ -104,16 +109,16 @@ const CreateForm = () => {
                 ticketPrice: values.ticketPrice,
                 totalTickets: values.totalTickets,
                 creatorId: userDoc?.id,
+                publicKey: publicKey?.toString(),
             };
 
-            alert(JSON.stringify(formData))
-            /*
             await toast.promise(createEvent(formData), {
                 loading: "Submitting...",
                 success: "Success!",
                 error: "Error!",
             });
-            */
+
+            router.push("/events");
         } catch (err) {
             alert(err)
         }
@@ -165,11 +170,9 @@ const CreateForm = () => {
                                         <label htmlFor="about" className="block text-sm font-medium leading-6 text-slate-100">Event Start Date</label>
                                         <div className="mt-2">
                                             <Field type="date" id="startDate" name="startDate" placeholder="Enter a start date..." rows={3} minLength={5} maxLength={500} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                console.log(e.target.value);
                                                 formikProps.setFieldValue("startDate", e.target.value)
-                                                //formikProps.setFieldValue("startTime", Math.floor(new Date(e.target.value).getTime() / 1000))
-
-                                            }} required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
+                                            }} 
+                                            required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
                                         </div>
                                         <ErrorMessage name="startDate" render={renderError} />
                                     </div>
@@ -178,11 +181,9 @@ const CreateForm = () => {
                                         <label htmlFor="about" className="block text-sm font-medium leading-6 text-slate-100">Event Time</label>
                                         <div className="mt-2">
                                             <Field type="time" id="startTime" name="startTime" placeholder="Enter a start time..." rows={3} minLength={5} maxLength={500} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                                                console.log(Date.parse(`${formikProps.values.startDate} ${formikProps.values.startTime}`))
                                                 formikProps.setFieldValue("startTime", e.target.value)
-                                                //formikProps.setFieldValue("startTime", Math.floor(new Date(e.target.value).getTime() / 1000))
-
-                                            }} required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
+                                            }} 
+                                            required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
                                         </div>
                                         <ErrorMessage name="startTime" render={renderError} />
                                     </div>
