@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDnocD_6fP1shC4qzSkoq7ADbunXxn81xI",
-  authDomain: "underdog-ticketing.firebaseapp.com",
-  projectId: "underdog-ticketing",
-  storageBucket: "underdog-ticketing.appspot.com",
-  messagingSenderId: "702204251903",
-  appId: "1:702204251903:web:b3b692ba8681c13d34c6ca"
-  };
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_APIKEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTHDOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECTID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGEBUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGINGSENDERID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APPID,
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

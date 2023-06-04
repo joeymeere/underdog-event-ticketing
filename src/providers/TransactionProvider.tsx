@@ -60,7 +60,42 @@ export const TransactionProvider = ({ children }: any) => {
         };
     }
 
+    async function sendBONK(toPublicKey: string, fromPublicKey: string, amount: number) {
+        const BONK_ADDRESS = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
 
+        const toWallet = new web3.PublicKey(toPublicKey);
+        const fromWallet = new web3.PublicKey(fromPublicKey);
+
+        let BONK_pubkey = new web3.PublicKey(BONK_ADDRESS);
+
+        let fromTokenAccount = await splToken.getAssociatedTokenAddressSync(BONK_pubkey, fromWallet);
+        let toTokenAccount = await splToken.getAssociatedTokenAddressSync(BONK_pubkey, toWallet);
+        let toTokenAccountInfo = await connection.getAccountInfo(toTokenAccount);
+
+        let transaction = new web3.Transaction();
+
+        if (!toTokenAccountInfo || !toTokenAccountInfo.data) {
+            console.log("Creating token account...")
+            await transaction.add(
+                splToken.createAssociatedTokenAccountInstruction(toWallet, toTokenAccount, toWallet, BONK_pubkey, splToken.TOKEN_PROGRAM_ID)
+            );
+        }
+
+        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount * Math.pow(10, 6), [], splToken.TOKEN_PROGRAM_ID));
+
+        console.log("Sending...");
+
+        let txid = await sendTransaction(transaction, connection)
+            .catch((err: any) => {
+                throw new Error(`Unexpected Error Occurred: ${err}`);
+            });
+
+        console.log(`Transaction submitted: https://xray.helius.xyz/${txid}/tx`);
+
+        return {
+            txhash: txid,
+        };
+    }
 
     return (
         <TransactionContext.Provider
@@ -69,6 +104,7 @@ export const TransactionProvider = ({ children }: any) => {
                 connected,
                 anchorWallet,
                 sendUSDC,
+                sendBONK
             }}
         >
             {children}
