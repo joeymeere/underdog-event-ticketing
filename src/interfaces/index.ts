@@ -38,5 +38,6 @@ export interface HandleEventCreaton {
   totalTickets: number;
   startTime: number;
   creatorId: string;
-  publicKey: string,
+  publicKey: string;
+  currency: string;
 }

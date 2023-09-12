@@ -16,11 +16,11 @@ import { db } from '@/providers/firebase';
 
 //TODO: Google-OAuth provider & Wallet implementation with Firebase Auth
 
-export default function EventModal({ id, open, setOpen, isPaywalled, eventName, city, time, image, isTransferable, toPublicKey, ticketPrice, collectionId }: any) {
+export default function EventModal({ id, open, setOpen, isPaywalled, eventName, city, time, image, isTransferable, toPublicKey, ticketPrice, collectionId, currency }: any) {
     const { setVisible } = useWalletModal();
     const { connected, publicKey } = useWallet();
     const { userDoc } = useFirebase();
-    const { sendUSDC } = useTransaction();
+    const { sendUSDC, sendBONK } = useTransaction();
     const [email, setEmail] = useState<string>("");
     const [name, setName] = useState<string>("");
     const cancelButtonRef = useRef(null);
@@ -77,7 +77,11 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
                 throw new Error("Please add a name")
             }
 
-            await sendUSDC(toPublicKey, publicKey, ticketPrice);
+            if (currency == "USDC") {
+                await sendUSDC(toPublicKey, publicKey, ticketPrice);
+            } else if (currency == "BONK") {
+                await sendBONK(toPublicKey, publicKey, ticketPrice);
+            }
             const mint = await mintTicket(eventName, image, city, moment.unix(time).format("l"), publicKey?.toString() as string, isTransferable, collectionId)
 
             await addDoc(collection(db, `events/${id}/participants`), {
@@ -161,7 +165,11 @@ export default function EventModal({ id, open, setOpen, isPaywalled, eventName, 
                                                         Ticket Price
                                                     </label>
                                                     <div className="mt-2">
-                                                        <p className="text-xl font-extrabold text-slate-200">{ticketPrice} USDC</p>
+                                                        {currency == "USDC" ? (
+                                                            <p className="text-xl font-extrabold text-slate-200">{ticketPrice} USDC</p>
+                                                        ) : (
+                                                            <p className="text-xl font-extrabold text-slate-200">{ticketPrice} BONK</p>
+                                                        )}
                                                     </div>
                                                 </div>
                                             ) : null}

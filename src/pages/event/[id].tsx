@@ -1,12 +1,9 @@
-import Header from "@/components/Layout/Header";
 import { db } from "@/providers/firebase";
-import { IconArmchair, IconArticle, IconBuildingCircus, IconCalendar, IconCircleArrowDown, IconLocation, IconUsers } from "@tabler/icons-react";
+import { IconArmchair, IconBuildingCircus, IconCalendar, IconCircleArrowDown, IconLocation, IconUsers } from "@tabler/icons-react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import moment from "moment";
 import React, { useState } from "react";
 import EventModal from "../../components/Events/EventModal";
-import styles from "../../styles/Transitions.module.css";
-import { useWallet } from "@solana/wallet-adapter-react";
 import SEO from "@/components/SEO";
 
 export const getServerSideProps = async ({ query }: any) => {
@@ -68,6 +65,7 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                     toPublicKey={keyItems.publicKey}
                     ticketPrice={keyItems.ticketPrice}
                     collectionId={keyItems.collectionId}
+                    currency={keyItems.currency}
                 />
             ) : null}
             <div className="mb-24 -z-10">
@@ -79,7 +77,13 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                         <div className="flex content-center justify-between">
                             <h1 className="text-4xl font-extrabold text-slate-100 max-[420px]:text-xl">{keyItems.name}</h1>
                             {keyItems.isPaywalled == true ? (
-                                <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">${keyItems.ticketPrice}</p>
+                                <>
+                                    {keyItems.currency == "USDC" ? (
+                                        <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">${keyItems.ticketPrice}</p>
+                                    ) : (
+                                        <p className="lg:text-4xl sm:text-xl font-extrabold text-slate-100">{keyItems.ticketPrice} BONK</p>
+                                    )}
+                                </>
                             ) : null}
                         </div>
                         <div className="my-4">
@@ -91,7 +95,11 @@ export default function EventPage({ id, user, keyItems, participantItems }: any)
                         </div>
                         <div className="flex">
                             <IconLocation size={24} color="white" />
-                            <p className="ml-2 text-md text-slate-200">{keyItems.location.city + "," + " " + keyItems.location.country}</p>
+                            {keyItems.location.isRemote == true ? (
+                                <p className="ml-2 text-md text-slate-200">Remote</p>
+                            ) : (
+                                <p className="ml-2 text-md text-slate-200">{keyItems.location.city + "," + " " + keyItems.location.country}</p>
+                            )}
                         </div>
                         <div className="mt-4 flex">
                             <IconArmchair size={24} color="white" />

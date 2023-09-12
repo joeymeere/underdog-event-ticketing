@@ -81,7 +81,7 @@ export const TransactionProvider = ({ children }: any) => {
             );
         }
 
-        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount * Math.pow(10, 6), [], splToken.TOKEN_PROGRAM_ID));
+        await transaction.add(splToken.createTransferInstruction(fromTokenAccount, toTokenAccount, fromWallet, amount * Math.pow(10, 5), [], splToken.TOKEN_PROGRAM_ID));
 
         console.log("Sending...");
 

@@ -4,7 +4,6 @@ import axios from "axios";
 import { addDoc, collection } from "firebase/firestore";
 
 export default async function createEvent(eventData: HandleEventCreaton) {
-
   let data = JSON.stringify({
     name: `${eventData.name}`,
     description: `${eventData.description}`,
@@ -41,7 +40,8 @@ export default async function createEvent(eventData: HandleEventCreaton) {
     collectionId: responseData.projectId,
     startTime: eventData.startTime,
     creatorId: eventData.creatorId,
-    publicKey: eventData.publicKey
-  })
+    publicKey: eventData.publicKey,
+    currency: eventData.currency,
+  });
   console.log("Event successfully created.");
 }

@@ -83,7 +83,8 @@ const CreateForm = () => {
         isPaywalled: false,
         isCapped: false,
         totalTickets: 10,
-        ticketPrice: 1
+        ticketPrice: 1,
+        currency: "USDC"
     };
 
     const handleSubmit = async (values: any) => {
@@ -110,6 +111,7 @@ const CreateForm = () => {
                 totalTickets: values.totalTickets,
                 creatorId: userDoc?.id,
                 publicKey: publicKey?.toString(),
+                currency: values.currency
             };
 
             await toast.promise(createEvent(formData), {
@@ -171,8 +173,8 @@ const CreateForm = () => {
                                         <div className="mt-2">
                                             <Field type="date" id="startDate" name="startDate" placeholder="Enter a start date..." rows={3} minLength={5} maxLength={500} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                                 formikProps.setFieldValue("startDate", e.target.value)
-                                            }} 
-                                            required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
+                                            }}
+                                                required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
                                         </div>
                                         <ErrorMessage name="startDate" render={renderError} />
                                     </div>
@@ -182,8 +184,8 @@ const CreateForm = () => {
                                         <div className="mt-2">
                                             <Field type="time" id="startTime" name="startTime" placeholder="Enter a start time..." rows={3} minLength={5} maxLength={500} onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                                 formikProps.setFieldValue("startTime", e.target.value)
-                                            }} 
-                                            required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
+                                            }}
+                                                required className="block w-full rounded-md border-0 py-1.5 px-2 text-slate-100 shadow-sm bg-zinc-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6"></Field>
                                         </div>
                                         <ErrorMessage name="startTime" render={renderError} />
                                     </div>
@@ -301,9 +303,20 @@ const CreateForm = () => {
                                     {isPaywalled ? (
                                         <div className="sm:col-span-4">
                                             <label htmlFor="ticket-price" className="block text-sm font-medium leading-6 text-slate-100">Ticket Price</label>
-                                            <div className="mt-2">
+                                            <div className="mt-2 flex">
                                                 <input type="number" name="ticket-price" id="ticket-price" placeholder="Enter your ticket price..." onChange={(e: ChangeEvent<HTMLInputElement>) => formikProps.setFieldValue("ticketPrice", e.target.value)} autoComplete="given-name" required className="block w-1/12 rounded-md border-0 bg-zinc-700 py-1.5 px-2 text-slate-100 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 placeholder:ml-2 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6" />
-                                                <p className="mr-2 text-sm leading-6 text-slate-200">USDC</p>
+                                                <button id="dropdownDelayButton" data-dropdown-toggle="dropdownDelay" data-dropdown-delay="500" data-dropdown-trigger="hover" className="ml-2 text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:outline-none focus:ring-emerald-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:focus:ring-emerald-800" type="button">Select Currency <svg className="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+                                                <div id="dropdownDelay" className="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700">
+                                                    <ul className="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDelayButton">
+                                                        <li>
+                                                            <a onClick={() => formikProps.setFieldValue("currency", "USDC")} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">USDC</a>
+                                                        </li>
+                                                        <li>
+                                                            <a onClick={() => formikProps.setFieldValue("currency", "BONK")} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">BONK</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
                                             </div>
                                         </div>
                                     ) : null}
