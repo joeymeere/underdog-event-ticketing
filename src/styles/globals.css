@@ -102,6 +102,11 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    background: #000000ff;
+  }
+
   body {
     background-size: 100% 100%;
     background-position: 0px 0px, 0px 0px;
