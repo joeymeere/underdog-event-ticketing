@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { IconBolt } from "@tabler/icons-react";
+import { IconBolt, IconLogin, IconLogout, IconUserBolt } from "@tabler/icons-react";
 import SignIn from "../Auth/SignIn";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useFirebase } from "@/providers/FirebaseProvider";
@@ -22,27 +22,30 @@ export function Header() {
             {open ? (
                 <SignIn open={open} setOpen={setOpen} />
             ) : null}
-            <nav className="sticky z-100 top-5 w-9/12 rounded-2xl mr-auto ml-auto z-auto bg-zinc-800 backdrop-filter backdrop-blur-lg bg-opacity-30">
-                <div className="max-w-5xl mx-auto px-4">
-                    <div className="flex items-center justify-between h-16">
-                        <div className="flex space-x-4 text-white">
+            <nav className="sticky z-50 top-5 w-9/12 rounded-2xl mr-auto ml-auto bg-zinc-800 backdrop-filter backdrop-blur-lg bg-opacity-30">
+                    <div className="w-full px-4 h-16 grid grid-cols-3 items-center justify-between">
+                        <div className="col-span-1 flex space-x-4 text-white">
                             <div className="hover:bg-emerald-300/25 rounded-xl p-2">
-                                <a className="text-md" href="/events">Events</a>
+                                <a className="text-md font-satoshi" href="/events">Events</a>
                             </div>
                             <div className="hover:bg-emerald-300/25 rounded-xl p-2">
-                                <a className="text-md" href="/create">Create</a>
+                                <a className="text-md font-satoshi" href="/create">Create</a>
+                            </div>
+                             <div className="hover:bg-emerald-300/25 rounded-xl p-2">
+                                <a className="text-md font-satoshi" href="https://underdogprotocol.com">About</a>
                             </div>
                         </div>
-                        <Link href="/">
+                        <Link href="/" passHref>
                             <Image
                                 priority
-                                src="/logo.svg"
+                                src="/underdogwhite.svg"
                                 alt="Underdog Protocol Logo"
                                 width={40}
                                 height={40}
+                                className="mx-auto"
                             />
                         </Link>
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4 ml-auto">
                             {userDoc != null ? (
                                 <div className="border-slate-900 rounded-xl p-2 hover:bg-emerald-300/25">
                                     <a href={`/user/${userDoc.id}`}>
@@ -60,15 +63,17 @@ export function Header() {
                                                     await setUserDoc(null);
                                                 }
                                             }
-                                            className="inline-flex items-center rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-3.5 py-2.5 text-md font-semibold text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                            className="inline-flex gap-2 items-center rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-4 py-2.5 text-md font-satoshi text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                                         >
+                                            <IconLogout stroke={1} />
                                             Sign-Out
                                         </a>
                                     ) : (
                                         <a
                                             href="/create-user"
-                                            className="inline-flex items-center rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-3.5 py-2.5 text-md font-semibold text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                            className="inline-flex gap-2 items-center rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-4 py-2.5 text-md font-satoshi text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                                         >
+                                            <IconUserBolt stroke={1} />
                                             Account
                                         </a>
                                     )}
@@ -76,15 +81,15 @@ export function Header() {
                             ) : (
                                 <a
                                     onClick={() => setVisible(true)}
-                                    className="inline-flex items-center rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-500 px-3.5 py-2.5 text-md font-semibold text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                    className="inline-flex gap-2 items-center rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-4 py-2.5 text-md font-satoshi text-slate-200 shadow-sm hover:bg-orange-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                                 >
+                                    <IconLogin stroke={1} />
                                     Sign-In
                                 </a>
                             )}
 
                         </div>
                     </div>
-                </div>
             </nav>
         </>
     );

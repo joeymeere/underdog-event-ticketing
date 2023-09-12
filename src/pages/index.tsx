@@ -8,12 +8,12 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Event Ticketing by Underdog"
-        description="Create events, distributed compressed NFT tickets, and connect with the people and communities that matter to you."
+        title="TurboTix | Elevate Your Ticketing"
+        description="Create events, distribute tickets, and connect with the people and communities that matter to you."
         image=""
       />
-      <main>
-        <section>
+      <main className="flex min-h-screen mx-auto flex-col items-center justify-between overflow-hidden">
+        <section className="w-full">
           <Hero />
         </section>
         <section>
